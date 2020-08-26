@@ -166,7 +166,8 @@ class WhatsApp extends EventEmitter {
                     L(Color.r("<< Action IGNORED"), attr.add, attr, childs)
                     return
                 }
-                if (!msg.key.fromme) {
+                // !msg.key.fromme
+                if (true) {
                     const jid = widHelper.parse(msg.key.remotejid)
                     switch (jid.server) {
                         case 'c.us':
