@@ -34,7 +34,9 @@ wa.on('qrcode', (qrContent) => {
 const senderQueue = [];
 
 childProcess.stdout.on('data', (data) => {
-    wa.sendTextMessage(senderQueue.shift(), `*federico* 🤖: ${data.toString()}`)
+    if (senderQueue.length > 0) {
+        wa.sendTextMessage(senderQueue.shift(), `*federico* 🤖: ${data.toString()}`)
+    }
 });
 
 wa.on('new-user-message', (msg) => {
