@@ -1,11 +1,9 @@
 import WhatsApp from "./whatsapp"
 import store from "./store"
 import * as qrcode from 'qrcode-terminal'
-// import fetch from 'node-fetch'
-import * as cp from 'child_process'
+import fetch from 'node-fetch'
 
 const wa = new WhatsApp();
-const childProcess = cp.spawn('python3 interact.py');
 
 wa.connect()
     .then(() => console.log(`Whatsapp: ${store.name} ${store.device}`))
@@ -31,13 +29,6 @@ wa.on('qrcode', (qrContent) => {
 //     )
 // })
 
-const senderQueue = [];
-
-childProcess.stdout.on('data', (data) => {
-    if (senderQueue.length > 0) {
-        wa.sendTextMessage(senderQueue.shift(), `*federico* 🤖: ${data.toString()}`)
-    }
-});
 
 wa.on('new-user-message', (msg) => {
     handleMessage(msg.key.remotejid, msg.message && msg.message.conversation)
@@ -49,12 +40,11 @@ wa.on('new-group-message', (msg) => {
 
 function handleMessage(sender: string, message: string) {
     if (message && message.includes('@federico') && !message.includes('*federico* 🤖:')) {
-        senderQueue.push(sender);
-        childProcess.stdin.write(message.replace('@federico', ''));
-        // fetch('https://api.kanye.rest/')
-        //     .then((response) => response.json())
-        //     .then((answer) => {
-        //         wa.sendTextMessage(sender, `*federico* 🤖: ${answer.quote}`)
-        //     })
+        fetch(`http://localhost:3000/talk?text=${message.replace('@federico', '')}`)
+            .then((response) => response.text())
+            .then((answer) => {
+                wa.sendTextMessage(sender, `*federico* 🤖: ${answer}`)
+                // wa.sendTextMessage(sender, `*federico* 🤖: ${answer.quote}`)
+            })
     }
 }

@@ -9,13 +9,16 @@
     "dist": "tsc -p tsconfig.dist.json",
     "postdist": "cp etc/whatsapp_pb.js dist/",
     "dev": "tsc-watch -p tsconfig.dev.json --onSuccess \"node build-dev/dev.js\" --onFirstSuccess \"cp etc/whatsapp_pb.js build-dev/\"",
+    "start:server": "node server.js",
     "test": "tsc",
     "posttest": "node build-test/test/test.js",
     "test-watch": "tsc-watch --onSuccess \"node build-test/test/test.js\"",
     "clean": "rm -rf dist build-*"
   },
   "dependencies": {
+    "@types/node-fetch": "^2.5.7",
     "curve25519-n": "^1.5.0",
+    "express": "^4.17.1",
     "futoin-hkdf": "^1.3.2",
     "google-protobuf": "^3.12.0",
     "node-fetch": "^2.6.0",
