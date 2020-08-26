@@ -4,7 +4,6 @@
 # LICENSE file in the root directory of this source tree.
 import logging
 import random
-from argparse import ArgumentParser
 from itertools import chain
 from pprint import pformat
 import warnings
@@ -87,22 +86,27 @@ def sample_sequence(personality, history, tokenizer, model, args, current_output
 
     return current_output
 
-parser = ArgumentParser()
-parser.add_argument("--dataset_path", type=str, default="", help="Path or url of the dataset. If empty download from S3.")
-parser.add_argument("--dataset_cache", type=str, default='./dataset_cache', help="Path or url of the dataset cache")
-parser.add_argument("--model", type=str, default="openai-gpt", help="Model type (openai-gpt or gpt2)", choices=['openai-gpt', 'gpt2'])  # anything besides gpt2 will load openai-gpt
-parser.add_argument("--model_checkpoint", type=str, default="", help="Path, url or short name of the model")
-parser.add_argument("--max_history", type=int, default=2, help="Number of previous utterances to keep in history")
-parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu", help="Device (cuda or cpu)")
 
-parser.add_argument("--no_sample", action='store_true', help="Set to use greedy decoding instead of sampling")
-parser.add_argument("--max_length", type=int, default=20, help="Maximum length of the output utterances")
-parser.add_argument("--min_length", type=int, default=1, help="Minimum length of the output utterances")
-parser.add_argument("--seed", type=int, default=0, help="Seed")
-parser.add_argument("--temperature", type=float, default=0.7, help="Sampling softmax temperature")
-parser.add_argument("--top_k", type=int, default=0, help="Filter top-k tokens before sampling (<=0: no filtering)")
-parser.add_argument("--top_p", type=float, default=0.9, help="Nucleus filtering (top-p) before sampling (<=0.0: no filtering)")
-args = parser.parse_args()
+class dotdict(dict):
+    """dot.notation access to dictionary attributes"""
+    __getattr__ = dict.get
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+
+args = dotdict({
+    'dataset_path': '',
+    'dataset_cache': './dataset_cache',
+    'model': 'openai-gpt',
+    'model_checkpoint': '',
+    'max_history': 2,
+    'device': "cuda" if torch.cuda.is_available() else "cpu",
+    'max_length': 20,
+    'min_length': 1,
+    'seed': 0,
+    'temperature': 0.7,
+    'top_k': 0,
+    'top_p': 0.9
+})
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__file__)
@@ -113,7 +117,6 @@ if args.model_checkpoint == "":
         raise ValueError("Interacting with GPT2 requires passing a finetuned model_checkpoint")
     else:
         args.model_checkpoint = download_pretrained_model()
-
 
 if args.seed != 0:
     random.seed(args.seed)
