@@ -8,4 +8,4 @@ history = []
 @app.route('/talk')
 def talk():
     text = request.args.get('text')
-    get_answer(history, text)
+    return get_answer(history, text)

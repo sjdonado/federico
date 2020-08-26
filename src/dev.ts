@@ -40,7 +40,7 @@ wa.on('new-group-message', (msg) => {
 
 function handleMessage(sender: string, message: string) {
     if (message && message.includes('@federico') && !message.includes('*federico* 🤖:')) {
-        fetch(`http://localhost:3000/talk?text=${message.replace('@federico', '')}`)
+        fetch(`http://localhost:3000/talk?text=${encodeURIComponent(message.replace('@federico', ''))}`)
             .then((response) => response.text())
             .then((answer) => {
                 wa.sendTextMessage(sender, `*federico* 🤖: ${answer}`)
