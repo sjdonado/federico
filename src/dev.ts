@@ -40,12 +40,21 @@ wa.on('new-group-message', (msg) => {
 
 function handleMessage(sender: string, message: string) {
     if (message && message.includes('@federico') && !message.includes('*federico* 🤖:')) {
-        fetch(`http://localhost:3000/talk?text=${encodeURIComponent(message.replace('@federico', ''))}`)
-            .then((response) => response.text())
-            .then((answer) => {
-                wa.sendTextMessage(sender, `*federico* 🤖: ${answer}`)
-                // wa.sendTextMessage(sender, `*federico* 🤖: ${answer.quote}`)
-            })
-            .catch(err => console.log(err))
+        const text = message.replace('@federico', '');
+        if (text.length > 0) {
+            fetch(`http://localhost:3000/talk?text=${encodeURIComponent(text)}`)
+                .then((response) => response.text())
+                .then((answer) => {
+                    wa.sendTextMessage(sender, `*federico* 🤖: ${answer}`)
+                })
+                .catch(err => console.log(err))
+        } else {
+            fetch('https://api.kanye.rest')
+                .then((response) => response.json())
+                .then((answer) => {
+                    wa.sendTextMessage(sender, `*federico* 🤖: ${answer.quote}`)
+                })
+                .catch(err => console.log(err))
+        }
     }
 }
