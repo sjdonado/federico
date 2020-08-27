@@ -144,11 +144,19 @@ logger.info("Selected personality: %s", tokenizer.decode(chain(*personality)))
 
 def get_answer(text):
     global history 
-    translation = translator.translate(text, dest='en')
+    translation = translator.translate(text)
     text = translation.text
+    logger.info("text: %s", text)
+
+    if len(text) == 0:
+        return 'lol'
+
     history.append(tokenizer.encode(text))
     with torch.no_grad():
         out_ids = sample_sequence(personality, history, tokenizer, model, args)
     history.append(out_ids)
     history = history[-(2*args.max_history+1):]
-    return tokenizer.decode(out_ids, skip_special_tokens=True)
+    answer = tokenizer.decode(out_ids, skip_special_tokens=True)
+
+    logger.info("answer: %s", answer)
+    return answer
