@@ -103,9 +103,9 @@ args = dotdict({
     'dataset_cache': './dataset_cache',
     'model': 'openai-gpt',
     'model_checkpoint': '',
-    'max_history': 2,
+    'max_history': 6,
     'device': "cuda" if torch.cuda.is_available() else "cpu",
-    'max_length': 20,
+    'max_length': 40,
     'min_length': 1,
     'seed': 0,
     'temperature': 0.7,
@@ -146,10 +146,10 @@ def get_answer(text):
     global history 
     translation = translator.translate(text)
     text = translation.text
-    logger.info("text: %s", text)
 
     if len(text) == 0:
         return 'lol'
+    logger.info("text: %s", text)
 
     history.append(tokenizer.encode(text))
     with torch.no_grad():

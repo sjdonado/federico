@@ -41,7 +41,7 @@ wa.on('new-group-message', (msg) => {
 function handleMessage(sender: string, message: string) {
     if (message && message.includes('@federico') && !message.includes('*federico* 🤖:')) {
         const text = message.replace('@federico', '');
-        if (text.length < 1 || text.includes('advice') || text.includes('joke') || text.includes('random')) {
+        if (text.length <= 1 || text.includes('advice') || text.includes('joke') || text.includes('random')) {
             fetch('https://api.kanye.rest')
                 .then((response) => response.json())
                 .then((answer) => {
