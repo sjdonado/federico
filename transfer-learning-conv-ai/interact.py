@@ -15,6 +15,11 @@ from transformers import OpenAIGPTLMHeadModel, OpenAIGPTTokenizer, GPT2LMHeadMod
 from train import SPECIAL_TOKENS, build_input_from_segments, add_special_tokens_
 from utils import get_dataset, download_pretrained_model
 
+from googletrans import Translator
+
+translator = Translator()
+history = []
+
 def top_filtering(logits, top_k=0., top_p=0.9, threshold=-float('Inf'), filter_value=-float('Inf')):
     """ Filter a distribution of logits using top-k, top-p (nucleus) and/or threshold filtering
         Args:
@@ -137,7 +142,9 @@ personalities = [dialog["personality"] for dataset in dataset.values() for dialo
 personality = random.choice(personalities)
 logger.info("Selected personality: %s", tokenizer.decode(chain(*personality)))
 
-def get_answer(history, text):
+def get_answer(text):
+    translation = translator.translate(text, dest='en')
+    text = translation.text
     history.append(tokenizer.encode(text))
     with torch.no_grad():
         out_ids = sample_sequence(personality, history, tokenizer, model, args)
