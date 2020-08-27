@@ -46,5 +46,6 @@ function handleMessage(sender: string, message: string) {
                 wa.sendTextMessage(sender, `*federico* 🤖: ${answer}`)
                 // wa.sendTextMessage(sender, `*federico* 🤖: ${answer.quote}`)
             })
+            .catch(err => console.log(err))
     }
 }
