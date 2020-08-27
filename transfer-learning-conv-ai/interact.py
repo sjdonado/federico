@@ -143,6 +143,7 @@ personality = random.choice(personalities)
 logger.info("Selected personality: %s", tokenizer.decode(chain(*personality)))
 
 def get_answer(text):
+    global history 
     translation = translator.translate(text, dest='en')
     text = translation.text
     history.append(tokenizer.encode(text))
